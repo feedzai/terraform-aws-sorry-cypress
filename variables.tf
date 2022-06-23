@@ -1,5 +1,5 @@
 variable "s3_bucket_name" {
-  type = string
+  type        = string
   description = "S3 bucket name to store test results"
 }
 variable "zone_id" {
@@ -7,7 +7,7 @@ variable "zone_id" {
   description = "The route53 zone id"
 }
 variable "url" {
-  type= string
+  type        = string
   description = "The URL to deploy SorryCypress to"
 }
 variable "load_balancer" {
@@ -52,6 +52,6 @@ variable "memory_request" {
   default     = "2048"
 }
 variable "subnets" {
-  type = list(string)
+  type        = list(string)
   description = "AWS subnet IDs to deploy Sorry Cypress"
 }
