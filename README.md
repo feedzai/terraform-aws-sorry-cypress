@@ -34,16 +34,18 @@ module "sorry_cypress" {
 
 |Name|Description|Type|Default|Required|
 |----|-----------|----|-------|--------|
-|`zone_id`|A Route53 public zone ID|`string`||yes|
-|`load_balancer`|A load balancer ARN|`string`||yes|
-|`load_balancer_security_group`|A load balancer security group|`string`||yes|
-|`load_balancer_listener`|A load balancer listener ARN|`string`||yes|
-|`vcp_id`|A VPC ID|`string`||yes|
-|`task_role_arn`|ARN of IAM role that allows your Amazon ECS container task to make calls to other AWS services|`string`||yes|
-|`execution_role_arn`|ARN of the task execution role that the Amazon ECS container agent and the Docker daemon can assume|`string`||yes|
-|`cpu_request`|Number of CPU units used by the task|`string`|`1024`|no|
-|`memory_request`|Amount (in MiB) of memory used by the task|`string`|`2048`|no|
-|`subnets`|List of AWS subnets to deploy to|`list(string)`||yes|
+|`s3_bucket_name`|S3 bucket name to store test results|`string`|yes|
+|`zone_id`|A Route53 public zone ID|`string`|yes|
+|`url`|The URL to deploy SorryCypress to|`string`|yes|
+|`load_balancer`|The load balancer resource|`string`|yes|
+|`load_balancer_security_group`|The load balancer security group ID|`string`|yes|
+|`load_balancer_listener`|The load balancer HTTPS listener ARN|`string`|yes|
+|`vpc_id`|The VPC ID|`string`|yes|
+|`task_role_arn`|ARN of IAM role that allows your Amazon ECS container task to make calls to other AWS services|`string`|yes|
+|`execution_role_arn`|ARN of the task execution role that the Amazon ECS container agent and the Docker daemon can assume|`string`|yes|
+|`cpu_request`|Number of cpu units used by the task|`string`|no|
+|`memory_request`|Amount (in MiB) of memory used by the task|`string`|no|
+|`subnets`|AWS subnet IDs to deploy Sorry Cypress|`string`|yes|
 
 ## Outputs
 |Name|Description|Example|
@@ -56,8 +58,23 @@ module "sorry_cypress" {
 
 |Name|Type|
 |----|----|
-|ad|resource|
-|as|datasource|
+|`aws_s3_bucket.test_results_bucket`| resource |
+|`aws_s3_bucket_acl.test_results_acl`| resource |
+|`aws_s3_bucket_cors_configuration.test_results_bucket_cors`| resource |
+|`aws_s3_bucket_public_access_block.sorry_cypress`| resource |
+|`aws_s3_bucket_server_side_encryption_configuration.sorry_cypress`| resource |
+|`aws_security_group.sorry_cypress_security_group`| resource |
+|`aws_security_group_rule.ingress_public_alb`| resource |
+|`aws_security_group_rule.ingress_containers_same_sg`| resource |
+|`aws_route53_record.sorry_cypress`| resource |
+|`aws_lb_target_group.sorry_cypress_director`| resource |
+|`aws_lb_target_group.sorry_cypress_api`| resource |
+|`aws_lb_target_group.sorry_cypress_dashboard`| resource |
+|`aws_lb_listener_rule.api_listener_rule`| resource |
+|`aws_cloudwatch_log_group.sorry_cypress_log_group`| resource |
+|`aws_ecs_cluster.sorry_cypress_ecs_cluster`| resource |
+|`aws_ecs_task_definition.sorry_cypress`| resource |
+|`aws_ecs_service.sorry_cypress_ecs_service`| resource |
 
 ## References
 

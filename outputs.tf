@@ -7,5 +7,5 @@ output "dashboard_url" {
 }
 
 output "director_url" {
-    value = "https://${aws_route53_record.sorry_cypress.fqdn}:1234"
+  value = "https://${aws_route53_record.sorry_cypress.fqdn}:1234"
 }

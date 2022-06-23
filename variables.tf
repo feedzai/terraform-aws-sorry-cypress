@@ -1,15 +1,23 @@
+variable "s3_bucket_name" {
+  type = string
+  description = "S3 bucket name to store test results"
+}
 variable "zone_id" {
   type        = string
   description = "The route53 zone id"
+}
+variable "url" {
+  type= string
+  description = "The URL to deploy SorryCypress to"
 }
 variable "load_balancer" {
   type = object({
     dns_name = string
     zone_id  = string
   })
-  description = "The load balancer"
+  description = "The load balancer resource"
 }
-variable "load_balancer_sg" {
+variable "load_balancer_security_group" {
   type = object({
     id = string
   })
@@ -44,8 +52,6 @@ variable "memory_request" {
   default     = "2048"
 }
 variable "subnets" {
-  type = object({
-    ids = list(string)
-  })
-  description = "AWS subnets to deploy Sorry Cypress"
+  type = list(string)
+  description = "AWS subnet IDs to deploy Sorry Cypress"
 }
