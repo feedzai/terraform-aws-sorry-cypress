@@ -1,0 +1,166 @@
+[
+    {
+        "name": "mongo",
+        "image": "${docker_registry}/library/mongo:4",
+        "essential": true,
+        "portMappings": [
+            {
+                "containerPort": 27017
+            }
+        ],
+        "logConfiguration": {
+            "logDriver": "awslogs",
+            "options": {
+                "awslogs-group": "${logs_group_name}",
+                "awslogs-region": "${region}",
+                "awslogs-stream-prefix": "ecs"
+            }
+        },
+        "environment": [
+            {
+                "name": "MONGO_INITDB_ROOT_PASSWORD",
+                "value": "sorry-cypress"
+            },
+            {
+                "name": "MONGO_INITDB_ROOT_USERNAME",
+                "value": "sorry-cypress"
+            }
+        ],
+        "repositoryCredentials": {
+            "credentialsParameter": "${docker_registry_credentials}"
+        }
+    },
+    {
+        "image": "${docker_registry}/agoldis/sorry-cypress-director:2.1.4",
+        "essential": true,
+        "portMappings": [
+            {
+                "containerPort": 1234
+            }
+        ],
+        "logConfiguration": {
+            "logDriver": "awslogs",
+            "options": {
+                "awslogs-group": "${logs_group_name}",
+                "awslogs-region": "${region}",
+                "awslogs-stream-prefix": "ecs"
+            }
+        },
+        "environment": [
+            {
+                "name": "DASHBOARD_URL",
+                "value": "https://${dns_name}"
+            },
+            {
+                "name": "EXECUTION_DRIVER",
+                "value": "../execution/mongo/driver"
+            },
+            {
+                "name": "SCREENSHOTS_DRIVER",
+                "value": "../screenshots/s3.driver"
+            },
+            {
+                "name": "MONGODB_DATABASE",
+                "value": "sorry-cypress"
+            },
+            {
+                "name": "MONGODB_URI",
+                "value": "mongodb://sorry-cypress:sorry-cypress@127.0.0.1:27017"
+            },
+            {
+                "name": "S3_BUCKET",
+                "value": "${bucket_name}"
+            },
+            {
+                "name": "S3_REGION",
+                "value": "${region}"
+            }
+        ],
+        "dependsOn": [
+            {
+                "containerName": "mongo",
+                "condition": "START"
+            }
+        ],
+        "name": "director",
+        "repositoryCredentials": {
+            "credentialsParameter": "${docker_registry_credentials}"
+        }
+    },
+    {
+        "image": "${docker_registry}/agoldis/sorry-cypress-api:2.1.4",
+        "portMappings": [
+            {
+                "containerPort": 4000
+            }
+        ],
+        "logConfiguration": {
+            "logDriver": "awslogs",
+            "options": {
+                "awslogs-group": "${logs_group_name}",
+                "awslogs-region": "${region}",
+                "awslogs-stream-prefix": "ecs"
+            }
+        },
+        "environment": [
+            {
+                "name": "MONGODB_DATABASE",
+                "value": "sorry-cypress"
+            },
+            {
+                "name": "MONGODB_URI",
+                "value": "mongodb://sorry-cypress:sorry-cypress@127.0.0.1:27017"
+            }
+        ],
+        "dependsOn": [
+            {
+                "containerName": "director",
+                "condition": "START"
+            }
+        ],
+        "name": "api",
+        "repositoryCredentials": {
+            "credentialsParameter": "${docker_registry_credentials}"
+        }
+    },
+    {
+        "image": "${docker_registry}/agoldis/sorry-cypress-dashboard:2.1.4",
+        "portMappings": [
+            {
+                "containerPort": 8080
+            }
+        ],
+        "logConfiguration": {
+            "logDriver": "awslogs",
+            "options": {
+                "awslogs-group": "${logs_group_name}",
+                "awslogs-region": "${region}",
+                "awslogs-stream-prefix": "ecs"
+            }
+        },
+        "environment": [
+            {
+                "name": "GRAPHQL_SCHEMA_URL",
+                "value": "/api"
+            },
+            {
+                "name": "PORT",
+                "value": "8080"
+            },
+            {
+                "name": "CI_URL",
+                "value": ""
+            }
+        ],
+        "dependsOn": [
+            {
+                "containerName": "api",
+                "condition": "START"
+            }
+        ],
+        "name": "dashboard",
+        "repositoryCredentials": {
+            "credentialsParameter": "${docker_registry_credentials}"
+        }
+    }
+]
