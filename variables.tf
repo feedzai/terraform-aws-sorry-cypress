@@ -10,24 +10,11 @@ variable "url" {
   type        = string
   description = "The URL to deploy SorryCypress to"
 }
-variable "load_balancer" {
-  type = object({
-    dns_name = string
-    zone_id  = string
-  })
-  description = "The load balancer resource"
-}
 variable "load_balancer_security_group" {
   type = object({
     id = string
   })
   description = "The load balancer security group"
-}
-variable "load_balancer_listener" {
-  type = object({
-    arn = string
-  })
-  description = "The load balancer HTTPS listener"
 }
 variable "vpc_id" {
   type        = string
@@ -52,6 +39,28 @@ variable "memory_request" {
   default     = "2048"
 }
 variable "subnets" {
-  type        = list(string)
+  type = object({
+    private = list(string),
+    public  = list(string)
+  })
   description = "AWS subnet IDs to deploy Sorry Cypress"
+}
+variable "alb_logs_bucket" {
+  type        = string
+  description = "An S3 bucket to store ALB access logs"
+}
+variable "certificate_arn" {
+  type = string
+}
+variable "docker_registry" {
+  type        = string
+  description = "The docker registry to pull sorry cypress images from"
+}
+variable "docker_registry_credentials" {
+  type        = string
+  description = "The ARN of the docker registry credentials secret in SecretsManager"
+}
+variable "prefix_list" {
+  type = string
+  description = "An EC2 managed prefix list"
 }
