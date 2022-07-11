@@ -13,7 +13,7 @@ output "director_url" {
   description = "The Sorry Cypress director URL"
 }
 
-output "test_result_buckets" {
+output "test_results_bucket" {
   value = aws_s3_bucket.test_results_bucket
   description = "The S3 bucket where test results are stored"
 }

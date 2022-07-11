@@ -18,6 +18,7 @@ resource "aws_security_group" "sorry_cypress_alb" {
     Name = "SorryCypress ALB Security Group"
   }
 }
+
 resource "aws_security_group_rule" "allow_http_alb" {
   type              = "ingress"
   from_port         = 80
@@ -86,9 +87,6 @@ resource "aws_security_group" "sorry_cypress_fargate" {
   tags = {
     Name = "SorryCypress Fargate Security Group"
   }
-  depends_on = [
-    aws_security_group.sorry_cypress_alb
-  ]
 }
 resource "aws_security_group_rule" "allow_inbound_containers" {
   type              = "ingress"
