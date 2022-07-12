@@ -61,6 +61,11 @@ variable "docker_registry_credentials" {
   description = "The ARN of the docker registry credentials secret in SecretsManager"
 }
 variable "prefix_list" {
-  type = string
+  type        = string
   description = "An EC2 managed prefix list"
+}
+variable "test_results_retention" {
+  type        = number
+  default     = 15
+  description = "The number of days to keep test results"
 }

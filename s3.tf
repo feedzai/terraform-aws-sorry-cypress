@@ -37,3 +37,14 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "sorry_cypress" {
     bucket_key_enabled = true
   }
 }
+
+resource "aws_s3_bucket_lifecycle_configuration" "tests_retention_policy" {
+  bucket = aws_s3_bucket.test_results_bucket.bucket
+  rule {
+    id     = "retention_policy"
+    status = "Enabled"
+    expiration {
+      days = var.test_results_retention
+    }
+  }
+}
