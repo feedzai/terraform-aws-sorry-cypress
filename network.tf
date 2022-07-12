@@ -222,7 +222,7 @@ resource "aws_lb_listener" "https" {
   ssl_policy        = "ELBSecurityPolicy-TLS-1-2-Ext-2018-06"
   certificate_arn   = var.certificate_arn
   default_action {
-    type = "forward"
+    type             = "forward"
     target_group_arn = aws_lb_target_group.sorry_cypress_dashboard.arn
   }
   depends_on = [
