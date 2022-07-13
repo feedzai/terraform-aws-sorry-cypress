@@ -19,10 +19,10 @@ resource "aws_security_group" "sorry_cypress_alb" {
   }
 }
 
-resource "aws_security_group_rule" "allow_http_alb" {
+resource "aws_security_group_rule" "allow_http_director" {
   type              = "ingress"
-  from_port         = 80
-  to_port           = 80
+  from_port         = 1234
+  to_port           = 1234
   protocol          = "tcp"
   security_group_id = aws_security_group.sorry_cypress_alb.id
   prefix_list_ids   = [var.prefix_list]
