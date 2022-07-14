@@ -26,11 +26,11 @@ resource "aws_security_group_rule" "allow_http_director" {
   protocol          = "tcp"
   security_group_id = aws_security_group.sorry_cypress_alb.id
   prefix_list_ids   = [var.prefix_list]
-  description       = "Allow HTTP traffic from Feedzai"
+  description       = "Allow HTTPS traffic to Director from prefix list"
 }
 resource "aws_security_group_rule" "allow_https_alb" {
   type            = "ingress"
-  description     = "Allow HTTPS traffic from Feedzai"
+  description     = "Allow HTTPS traffic from prefix list"
   from_port       = 443
   to_port         = 443
   protocol        = "tcp"

@@ -28,16 +28,6 @@ resource "aws_s3_bucket_public_access_block" "sorry_cypress" {
   restrict_public_buckets = true
 }
 
-resource "aws_s3_bucket_server_side_encryption_configuration" "sorry_cypress" {
-  bucket = aws_s3_bucket.test_results_bucket.bucket
-  rule {
-    apply_server_side_encryption_by_default {
-      sse_algorithm = "aws:kms"
-    }
-    bucket_key_enabled = true
-  }
-}
-
 resource "aws_s3_bucket_lifecycle_configuration" "tests_retention_policy" {
   bucket = aws_s3_bucket.test_results_bucket.bucket
   rule {
@@ -45,6 +35,41 @@ resource "aws_s3_bucket_lifecycle_configuration" "tests_retention_policy" {
     status = "Enabled"
     expiration {
       days = var.test_results_retention
+    }
+  }
+}
+
+resource "aws_s3_bucket_policy" "allow_access_from_prefix_list" {
+  bucket = aws_s3_bucket.test_results_bucket.id
+  policy = data.aws_iam_policy_document.allow_access_from_prefix_list.json
+}
+
+data "aws_ec2_managed_prefix_list" "prefix_list" {
+  id = var.prefix_list
+}
+
+data "aws_iam_policy_document" "allow_access_from_prefix_list" {
+  statement {
+    sid = "AllowAccessFromPrefixList"
+    principals {
+      type        = "*"
+      identifiers = ["*"]
+    }
+    actions = [
+      "s3:PutObject",
+      "s3:PutObjectAcl",
+      "s3:GetObjectAcl",
+      "s3:GetObject",
+      "s3:ListBucket"
+    ]
+    resources = [
+      aws_s3_bucket.test_results_bucket.arn,
+      "${aws_s3_bucket.test_results_bucket.arn}/*"
+    ]
+    condition {
+      test     = "IpAddress"
+      variable = "aws:SourceIp"
+      values = data.aws_ec2_managed_prefix_list.prefix_list.entries[*].cidr
     }
   }
 }
