@@ -4,7 +4,7 @@ resource "aws_s3_bucket" "test_results_bucket" {
 
 resource "aws_s3_bucket_acl" "test_results_acl" {
   bucket = aws_s3_bucket.test_results_bucket.id
-  acl    = "private"
+  acl    = "public-read"
 }
 
 resource "aws_s3_bucket_cors_configuration" "test_results_bucket_cors" {
@@ -22,9 +22,9 @@ resource "aws_s3_bucket_cors_configuration" "test_results_bucket_cors" {
 resource "aws_s3_bucket_public_access_block" "sorry_cypress" {
   bucket = aws_s3_bucket.test_results_bucket.id
 
-  block_public_acls       = true
+  block_public_acls       = false
   block_public_policy     = true
-  ignore_public_acls      = true
+  ignore_public_acls      = false
   restrict_public_buckets = true
 }
 
@@ -69,7 +69,7 @@ data "aws_iam_policy_document" "allow_access_from_prefix_list" {
     condition {
       test     = "IpAddress"
       variable = "aws:SourceIp"
-      values = data.aws_ec2_managed_prefix_list.prefix_list.entries[*].cidr
+      values   = data.aws_ec2_managed_prefix_list.prefix_list.entries[*].cidr
     }
   }
 }
