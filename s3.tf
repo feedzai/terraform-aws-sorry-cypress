@@ -4,7 +4,18 @@ resource "aws_s3_bucket" "test_results_bucket" {
 
 resource "aws_s3_bucket_acl" "test_results_acl" {
   bucket = aws_s3_bucket.test_results_bucket.id
-  acl    = "public-read"
+  access_control_policy {
+    grant {
+      grantee {
+        id   = data.aws_canonical_user_id.current.id
+        type = "CanonicalUser"
+      }
+      permission = "FULL_CONTROL"
+    }
+    owner {
+      id = data.aws_canonical_user_id.current.id
+    }
+  }
 }
 
 resource "aws_s3_bucket_cors_configuration" "test_results_bucket_cors" {
@@ -24,7 +35,7 @@ resource "aws_s3_bucket_public_access_block" "sorry_cypress" {
 
   block_public_acls       = false
   block_public_policy     = true
-  ignore_public_acls      = false
+  ignore_public_acls      = true
   restrict_public_buckets = true
 }
 
