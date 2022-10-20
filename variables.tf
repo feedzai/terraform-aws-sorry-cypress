@@ -45,10 +45,7 @@ variable "subnets" {
   })
   description = "AWS subnet IDs to deploy Sorry Cypress"
 }
-variable "alb_logs_bucket" {
-  type        = string
-  description = "An S3 bucket to store ALB access logs"
-}
+
 variable "certificate_arn" {
   type = string
 }
