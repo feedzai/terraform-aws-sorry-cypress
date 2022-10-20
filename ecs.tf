@@ -1,5 +1,5 @@
 locals {
-  ecs_cluster_arn = var.create_ecs_cluster ? aws_ecs_cluster.sorry_cypress.arn : var.ecs_cluster_id
+  ecs_cluster_arn = var.create_ecs_cluster ? aws_ecs_cluster.sorry_cypress[0].id : var.ecs_cluster_id
 }
 
 resource "aws_ecs_cluster" "sorry_cypress" {
