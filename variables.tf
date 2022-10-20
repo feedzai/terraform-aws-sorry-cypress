@@ -76,8 +76,8 @@ variable "create_ecs_cluster" {
   description = "boolean to define if ecs cluster should be created"
 }
 
-variable "ecs_cluster_arn" {
+variable "ecs_cluster_id" {
   default     = ""
   type        = string
-  description = "define the complete ECS cluster ARN if already existing ecs cluster exists"
+  description = "define the complete ECS cluster ID if already existing ecs cluster exists"
 }
