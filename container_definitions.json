@@ -1,7 +1,7 @@
 [
     {
         "name": "mongo",
-        "image": "${docker_registry}/library/mongo:4",
+        "image": "${docker_registry}library/mongo:4",
         "essential": true,
         "portMappings": [
             {
@@ -31,7 +31,7 @@
         }
     },
     {
-        "image": "${docker_registry}/agoldis/sorry-cypress-director:2.1.4",
+        "image": "${docker_registry}agoldis/sorry-cypress-director:2.1.4",
         "essential": true,
         "portMappings": [
             {
@@ -88,7 +88,7 @@
         }
     },
     {
-        "image": "${docker_registry}/agoldis/sorry-cypress-api:2.1.4",
+        "image": "${docker_registry}agoldis/sorry-cypress-api:2.1.4",
         "portMappings": [
             {
                 "containerPort": 4000
@@ -124,7 +124,7 @@
         }
     },
     {
-        "image": "${docker_registry}/agoldis/sorry-cypress-dashboard:2.1.4",
+        "image": "${docker_registry}agoldis/sorry-cypress-dashboard:2.1.4",
         "portMappings": [
             {
                 "containerPort": 8080

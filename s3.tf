@@ -55,16 +55,14 @@ resource "aws_s3_bucket_policy" "allow_access_from_prefix_list" {
   policy = data.aws_iam_policy_document.allow_access_from_prefix_list.json
 }
 
-data "aws_ec2_managed_prefix_list" "prefix_list" {
-  id = var.prefix_list
-}
+data "aws_caller_identity" "current" {}
 
 data "aws_iam_policy_document" "allow_access_from_prefix_list" {
   statement {
     sid = "AllowAccessFromPrefixList"
     principals {
-      type        = "*"
-      identifiers = ["*"]
+      type        = "AWS"
+      identifiers = [data.aws_caller_identity.current.account_id]
     }
     actions = [
       "s3:PutObject",
@@ -77,10 +75,5 @@ data "aws_iam_policy_document" "allow_access_from_prefix_list" {
       aws_s3_bucket.test_results_bucket.arn,
       "${aws_s3_bucket.test_results_bucket.arn}/*"
     ]
-    condition {
-      test     = "IpAddress"
-      variable = "aws:SourceIp"
-      values   = data.aws_ec2_managed_prefix_list.prefix_list.entries[*].cidr
-    }
   }
 }

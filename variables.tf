@@ -51,16 +51,14 @@ variable "certificate_arn" {
 }
 variable "docker_registry" {
   type        = string
+  default     = ""
   description = "The docker registry to pull sorry cypress images from"
 }
 variable "docker_registry_credentials" {
   type        = string
   description = "The ARN of the docker registry credentials secret in SecretsManager"
 }
-variable "prefix_list" {
-  type        = string
-  description = "An EC2 managed prefix list"
-}
+
 variable "test_results_retention" {
   type        = number
   default     = 15
