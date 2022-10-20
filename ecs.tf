@@ -1,5 +1,11 @@
+
+locals {
+  ecs_cluster_arn = var.create_ecs_cluster ? aws_ecs_cluster.sorry_cypress.arn : var.ecs_cluster_arn
+}
+
 resource "aws_ecs_cluster" "sorry_cypress" {
-  name = "sorry-cypress-ecs-cluster"
+  count = var.create_ecs_cluster ? 1 : 0
+  name  = "sorry-cypress-ecs-cluster"
   configuration {
     execute_command_configuration {
       logging = "OVERRIDE"
@@ -33,14 +39,11 @@ resource "aws_ecs_task_definition" "sorry_cypress" {
       docker_registry_credentials = var.docker_registry_credentials
     }
   )
-  depends_on = [
-    aws_ecs_cluster.sorry_cypress
-  ]
 }
 
 resource "aws_ecs_service" "sorry_cypress_ecs_service" {
   name                               = "sorry-cypress-ecs-service"
-  cluster                            = aws_ecs_cluster.sorry_cypress.arn
+  cluster                            = local.ecs_cluster_arn
   launch_type                        = "FARGATE"
   deployment_maximum_percent         = 200
   deployment_minimum_healthy_percent = 100
@@ -71,7 +74,6 @@ resource "aws_ecs_service" "sorry_cypress_ecs_service" {
   }
 
   depends_on = [
-    aws_ecs_cluster.sorry_cypress,
     aws_ecs_task_definition.sorry_cypress,
     aws_lb_target_group.sorry_cypress_api,
     aws_lb_target_group.sorry_cypress_director,

@@ -69,3 +69,15 @@ variable "test_results_retention" {
   default     = 15
   description = "The number of days to keep test results"
 }
+
+variable "create_ecs_cluster" {
+  default     = true
+  type        = bool
+  description = "boolean to define if ecs cluster should be created"
+}
+
+variable "ecs_cluster_arn" {
+  default     = ""
+  type        = string
+  description = "define the complete ECS cluster ARN if already existing ecs cluster exists"
+}
