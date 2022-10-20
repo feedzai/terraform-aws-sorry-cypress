@@ -183,12 +183,6 @@ resource "aws_lb" "sorry_cypress" {
   security_groups    = [aws_security_group.sorry_cypress_alb.id, aws_security_group.sorry_cypress_fargate.id]
   subnets            = var.subnets.public
 
-  access_logs {
-    bucket  = var.alb_logs_bucket
-    prefix  = "sorry-cypress"
-    enabled = true
-  }
-
   depends_on = [
     aws_security_group.sorry_cypress_alb,
     aws_security_group.sorry_cypress_fargate
