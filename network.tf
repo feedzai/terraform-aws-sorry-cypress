@@ -14,9 +14,9 @@ resource "aws_security_group" "sorry_cypress_alb" {
   description = "Security Group for the Sorry Cypress ALB"
   vpc_id      = var.vpc_id
 
-  tags = {
+  tags = merge({
     Name = "SorryCypress ALB Security Group"
-  }
+  },var.tags)
 }
 
 resource "aws_security_group_rule" "allow_http_director" {
@@ -84,9 +84,9 @@ resource "aws_security_group" "sorry_cypress_fargate" {
   description = "Access to the sorry cypress Fargate containers"
   vpc_id      = var.vpc_id
 
-  tags = {
+  tags = merge({
     Name = "SorryCypress Fargate Security Group"
-  }
+  },var.tags)
 }
 resource "aws_security_group_rule" "allow_inbound_containers" {
   type              = "ingress"
@@ -182,6 +182,8 @@ resource "aws_lb" "sorry_cypress" {
   load_balancer_type = "application"
   security_groups    = [aws_security_group.sorry_cypress_alb.id, aws_security_group.sorry_cypress_fargate.id]
   subnets            = var.subnets.public
+
+  tags = var.tags
 
   depends_on = [
     aws_security_group.sorry_cypress_alb,

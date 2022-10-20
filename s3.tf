@@ -1,5 +1,7 @@
 resource "aws_s3_bucket" "test_results_bucket" {
   bucket = var.s3_bucket_name
+
+  tags = var.tags
 }
 
 resource "aws_s3_bucket_acl" "test_results_acl" {

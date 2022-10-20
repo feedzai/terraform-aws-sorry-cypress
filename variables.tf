@@ -79,3 +79,8 @@ variable "ecs_cluster_id" {
   type        = string
   description = "define the complete ECS cluster ID if already existing ecs cluster exists"
 }
+
+variable "tags" {
+  type = map(string)
+  description = "tags"
+}

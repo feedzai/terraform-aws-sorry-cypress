@@ -7,6 +7,7 @@ locals {
 resource "aws_cloudwatch_log_group" "sorry_cypress_log_group" {
   name              = "/ecs/sorry-cypress"
   retention_in_days = 14
+  tags = var.tags
 }
 
 data "aws_canonical_user_id" "current" {}

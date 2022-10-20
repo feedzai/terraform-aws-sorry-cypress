@@ -17,6 +17,7 @@ resource "aws_ecs_cluster" "sorry_cypress" {
   depends_on = [
     aws_cloudwatch_log_group.sorry_cypress_log_group
   ]
+  tags = var.tags
 }
 
 resource "aws_ecs_task_definition" "sorry_cypress" {
@@ -38,6 +39,7 @@ resource "aws_ecs_task_definition" "sorry_cypress" {
       docker_registry_credentials = var.docker_registry_credentials
     }
   )
+  tags = var.tags
 }
 
 resource "aws_ecs_service" "sorry_cypress_ecs_service" {
@@ -71,6 +73,7 @@ resource "aws_ecs_service" "sorry_cypress_ecs_service" {
     container_port   = local.dashboard_port
     target_group_arn = aws_lb_target_group.sorry_cypress_dashboard.arn
   }
+  tags = var.tags
 
   depends_on = [
     aws_ecs_task_definition.sorry_cypress,
