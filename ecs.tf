@@ -52,8 +52,9 @@ resource "aws_ecs_service" "sorry_cypress_ecs_service" {
   health_check_grace_period_seconds  = 300
 
   network_configuration {
-    security_groups = [aws_security_group.sorry_cypress_fargate.id]
-    subnets         = var.subnets.private
+    security_groups  = [aws_security_group.sorry_cypress_fargate.id]
+    subnets          = var.subnets.private
+    assign_public_ip = true
   }
 
   task_definition = aws_ecs_task_definition.sorry_cypress.arn
