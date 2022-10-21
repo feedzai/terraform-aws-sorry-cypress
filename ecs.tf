@@ -79,6 +79,7 @@ resource "aws_ecs_service" "sorry_cypress_ecs_service" {
     aws_ecs_task_definition.sorry_cypress,
     aws_lb_target_group.sorry_cypress_api,
     aws_lb_target_group.sorry_cypress_director,
-    aws_lb_target_group.sorry_cypress_dashboard
+    aws_lb_target_group.sorry_cypress_dashboard,
+    aws_cloudwatch_log_group.sorry_cypress_log_group
   ]
 }
