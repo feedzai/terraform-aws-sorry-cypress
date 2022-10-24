@@ -45,22 +45,20 @@ variable "subnets" {
   })
   description = "AWS subnet IDs to deploy Sorry Cypress"
 }
-variable "alb_logs_bucket" {
-  type        = string
-  description = "An S3 bucket to store ALB access logs"
-}
+
 variable "certificate_arn" {
   type = string
 }
 variable "docker_registry" {
   type        = string
+  default      = ""
   description = "The docker registry to pull sorry cypress images from"
 }
 variable "docker_registry_credentials" {
   type        = string
   description = "The ARN of the docker registry credentials secret in SecretsManager"
 }
-variable "prefix_list" {
+variable "prefix_list_name" {
   type        = string
   description = "An EC2 managed prefix list"
 }
@@ -68,4 +66,21 @@ variable "test_results_retention" {
   type        = number
   default     = 15
   description = "The number of days to keep test results"
+}
+
+variable "create_ecs_cluster" {
+  default     = true
+  type        = bool
+  description = "boolean to define if ecs cluster should be created"
+}
+
+variable "ecs_cluster_id" {
+  default     = ""
+  type        = string
+  description = "define the complete ECS cluster ID if already existing ecs cluster exists"
+}
+
+variable "tags" {
+  type = map(string)
+  description = "tags"
 }

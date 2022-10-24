@@ -14,9 +14,9 @@ resource "aws_security_group" "sorry_cypress_alb" {
   description = "Security Group for the Sorry Cypress ALB"
   vpc_id      = var.vpc_id
 
-  tags = {
+  tags = merge({
     Name = "SorryCypress ALB Security Group"
-  }
+  },var.tags)
 }
 
 resource "aws_security_group_rule" "allow_http_director" {
@@ -25,7 +25,7 @@ resource "aws_security_group_rule" "allow_http_director" {
   to_port           = 1234
   protocol          = "tcp"
   security_group_id = aws_security_group.sorry_cypress_alb.id
-  prefix_list_ids   = [var.prefix_list]
+  prefix_list_ids   = [data.aws_ec2_managed_prefix_list.prefix_list.id]
   description       = "Allow HTTPS traffic to Director from prefix list"
 }
 resource "aws_security_group_rule" "allow_https_alb" {
@@ -34,7 +34,7 @@ resource "aws_security_group_rule" "allow_https_alb" {
   from_port       = 443
   to_port         = 443
   protocol        = "tcp"
-  prefix_list_ids = [var.prefix_list]
+  prefix_list_ids = [data.aws_ec2_managed_prefix_list.prefix_list.id]
 
   security_group_id = aws_security_group.sorry_cypress_alb.id
 }
@@ -84,9 +84,9 @@ resource "aws_security_group" "sorry_cypress_fargate" {
   description = "Access to the sorry cypress Fargate containers"
   vpc_id      = var.vpc_id
 
-  tags = {
+  tags = merge({
     Name = "SorryCypress Fargate Security Group"
-  }
+  },var.tags)
 }
 resource "aws_security_group_rule" "allow_inbound_containers" {
   type              = "ingress"
@@ -183,11 +183,7 @@ resource "aws_lb" "sorry_cypress" {
   security_groups    = [aws_security_group.sorry_cypress_alb.id, aws_security_group.sorry_cypress_fargate.id]
   subnets            = var.subnets.public
 
-  access_logs {
-    bucket  = var.alb_logs_bucket
-    prefix  = "sorry-cypress"
-    enabled = true
-  }
+  tags = var.tags
 
   depends_on = [
     aws_security_group.sorry_cypress_alb,

@@ -1,5 +1,7 @@
 resource "aws_s3_bucket" "test_results_bucket" {
   bucket = var.s3_bucket_name
+
+  tags = var.tags
 }
 
 resource "aws_s3_bucket_acl" "test_results_acl" {
@@ -56,7 +58,10 @@ resource "aws_s3_bucket_policy" "allow_access_from_prefix_list" {
 }
 
 data "aws_ec2_managed_prefix_list" "prefix_list" {
-  id = var.prefix_list
+  filter {
+    name   = "prefix-list-name"
+    values = [var.prefix_list_name]
+  }
 }
 
 data "aws_iam_policy_document" "allow_access_from_prefix_list" {

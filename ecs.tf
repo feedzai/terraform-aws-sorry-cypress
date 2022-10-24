@@ -1,5 +1,10 @@
+locals {
+  ecs_cluster_arn = var.create_ecs_cluster ? aws_ecs_cluster.sorry_cypress[0].id : var.ecs_cluster_id
+}
+
 resource "aws_ecs_cluster" "sorry_cypress" {
-  name = "sorry-cypress-ecs-cluster"
+  count = var.create_ecs_cluster ? 1 : 0
+  name  = "sorry-cypress-ecs-cluster"
   configuration {
     execute_command_configuration {
       logging = "OVERRIDE"
@@ -12,6 +17,7 @@ resource "aws_ecs_cluster" "sorry_cypress" {
   depends_on = [
     aws_cloudwatch_log_group.sorry_cypress_log_group
   ]
+  tags = var.tags
 }
 
 resource "aws_ecs_task_definition" "sorry_cypress" {
@@ -25,22 +31,20 @@ resource "aws_ecs_task_definition" "sorry_cypress" {
   container_definitions = templatefile(
     "${path.module}/container_definitions.json",
     {
-      logs_group_name             = aws_cloudwatch_log_group.sorry_cypress_log_group.name
-      region                      = "eu-west-1"
+      logs_group_name             = local.log_group_name
+      region                      = "eu-west-3"
       dns_name                    = aws_route53_record.sorry_cypress.fqdn
       bucket_name                 = aws_s3_bucket.test_results_bucket.id
       docker_registry             = var.docker_registry
       docker_registry_credentials = var.docker_registry_credentials
     }
   )
-  depends_on = [
-    aws_ecs_cluster.sorry_cypress
-  ]
+  tags = var.tags
 }
 
 resource "aws_ecs_service" "sorry_cypress_ecs_service" {
   name                               = "sorry-cypress-ecs-service"
-  cluster                            = aws_ecs_cluster.sorry_cypress.arn
+  cluster                            = local.ecs_cluster_arn
   launch_type                        = "FARGATE"
   deployment_maximum_percent         = 200
   deployment_minimum_healthy_percent = 100
@@ -48,8 +52,9 @@ resource "aws_ecs_service" "sorry_cypress_ecs_service" {
   health_check_grace_period_seconds  = 300
 
   network_configuration {
-    security_groups = [aws_security_group.sorry_cypress_fargate.id]
-    subnets         = var.subnets.private
+    security_groups  = [aws_security_group.sorry_cypress_fargate.id]
+    subnets          = var.subnets.private
+    assign_public_ip = true
   }
 
   task_definition = aws_ecs_task_definition.sorry_cypress.arn
@@ -69,12 +74,13 @@ resource "aws_ecs_service" "sorry_cypress_ecs_service" {
     container_port   = local.dashboard_port
     target_group_arn = aws_lb_target_group.sorry_cypress_dashboard.arn
   }
+  tags = var.tags
 
   depends_on = [
-    aws_ecs_cluster.sorry_cypress,
     aws_ecs_task_definition.sorry_cypress,
     aws_lb_target_group.sorry_cypress_api,
     aws_lb_target_group.sorry_cypress_director,
-    aws_lb_target_group.sorry_cypress_dashboard
+    aws_lb_target_group.sorry_cypress_dashboard,
+    aws_cloudwatch_log_group.sorry_cypress_log_group
   ]
 }

@@ -4,6 +4,8 @@ Terraform module that deploys Sorry Cypress on AWS.
 
 ## Usage
 
+### Create ECS Cluster
+
 ```hcl
 module "sorry_cypress" {
     source = "terraform-aws-sorry-cypress"
@@ -22,6 +24,32 @@ module "sorry_cypress" {
     alb_logs_bucket = "alb_logs_bucket"
     certificate_arn = "arn::acm::..."
     docker_registry_credentials = "secret-name-in-secrets-manager"
+}
+```
+
+### Use Already Existing ECS Cluster
+
+```hcl
+module "sorry_cypress" {
+    source = "terraform-aws-sorry-cypress"
+
+    s3_bucket_name = "sorry_cypress_test_results"
+    zone_id = "example.com"
+    url = "sorrycypress.example.com"
+    load_balancer_security_group = "sg-123456789"
+    vpc_id = "vpc-123456"
+    task_role_arn = "arn::iam::role"
+    execution_role_arn = "arn::iam::role"
+    subnets = {
+        private = []
+        public = []
+    }
+    alb_logs_bucket = "alb_logs_bucket"
+    certificate_arn = "arn::acm::..."
+    docker_registry_credentials = "secret-name-in-secrets-manager"
+  
+    create_ecs_cluster = false
+    ecs_cluster_id = aws_ecs_cluster.cluster.id
 }
 ```
 
