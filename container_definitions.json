@@ -166,5 +166,45 @@
         "repositoryCredentials": {
             "credentialsParameter": "${docker_registry_credentials}"
         }
+    },
+    {
+        "name": "oauth2-proxy",
+        "image": "${docker_registry}bitnami/oauth2-proxy:7.2.1",
+        "essential" : true,
+        "command" : [
+            "--http-address", "0.0.0.0:9090",
+            "--upstream", "http://localhost:8080",
+            "--cookie-secure", "false",
+            "--cookie-refresh", "5m",
+            "--email-domain", "*",
+            "--provider", "google",
+            "--skip-jwt-bearer-tokens", "true",
+            "--extra-jwt-issuers", "https://accounts.google.com=32555940559.apps.googleusercontent.com"],
+        "portMappings" : [{
+            "containerPort"
+           : 9090 }],
+
+    "secrets" : [
+    {
+        "name"      : "OAUTH2_PROXY_CLIENT_ID",
+        "valueFrom" : "${OAUTH2_PROXY_CLIENT_ID_PARAMETER_STORE_ARN}"
+    },
+    {
+        "name"      : "OAUTH2_PROXY_CLIENT_SECRET",
+        "valueFrom" : "${OAUTH2_PROXY_CLIENT_SECRET_PARAMETER_STORE_ARN}"
+    },
+    {
+        "name"      : "OAUTH2_PROXY_COOKIE_SECRET",
+        "valueFrom" : "${OAUTH2_PROXY_COOKIE_SECRET_PARAMETER_STORE_ARN}"
+    }],
+    "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+            "awslogs-create-group": "true",
+            "awslogs-group": "${logs_group_name}",
+            "awslogs-region": "${region}",
+            "awslogs-stream-prefix": "ecs"
+        }
+    }
     }
 ]

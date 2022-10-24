@@ -1,7 +1,7 @@
 locals {
   director_port  = 1234
   api_port       = 4000
-  dashboard_port = 8080
+  dashboard_port = 9090
   log_group_name = "/ecs/sorry-cypress"
 }
 
