@@ -180,9 +180,7 @@
             "--provider", "google",
             "--skip-jwt-bearer-tokens", "true",
             "--extra-jwt-issuers", "https://accounts.google.com=32555940559.apps.googleusercontent.com"],
-        "portMappings" : [{
-            "containerPort"
-           : 9090 }],
+        "portMappings" : [{"containerPort": 9090 }],
 
     "secrets" : [
     {
