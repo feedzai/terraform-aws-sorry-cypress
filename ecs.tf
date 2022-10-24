@@ -31,8 +31,8 @@ resource "aws_ecs_task_definition" "sorry_cypress" {
   container_definitions = templatefile(
     "${path.module}/container_definitions.json",
     {
-      logs_group_name             = aws_cloudwatch_log_group.sorry_cypress_log_group.name
-      region                      = "eu-west-1"
+      logs_group_name             = local.log_group_name
+      region                      = "eu-west-3"
       dns_name                    = aws_route53_record.sorry_cypress.fqdn
       bucket_name                 = aws_s3_bucket.test_results_bucket.id
       docker_registry             = var.docker_registry
